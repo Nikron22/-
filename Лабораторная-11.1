@@ -1,0 +1,74 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Лаба_11._1
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+        private double number_n;
+
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            label3.Text = trackBar1.Value.ToString();
+            number_n = trackBar1.Value;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (radioButton1.Checked)
+            {
+                label1.Text = $"Результат = {CycleProgression(number_n)}";
+            }
+            else if (radioButton2.Checked)
+            {
+                label1.Text = $"Результат = {FormulaProgression(number_n)}";
+            }
+            else
+            {
+                MessageBox.Show("Выберите способ вычисления");
+            }
+
+        }
+        static double CycleProgression(double number_n)
+        {
+            try
+            {
+                double result = 0;
+                for (int i = 1; i <= number_n; i++)
+                {
+                    result += 3 * i - 2;
+                }
+                return result;
+            }
+            catch (StackOverflowException stackOFEx)
+            {
+                MessageBox.Show("исключение: переполение стека");
+            }
+            return 0;
+        }
+        static double FormulaProgression(double number_n)
+        {
+            try
+            {
+                return (number_n * (3 * number_n - 1) / 2);
+            }
+            catch (StackOverflowException stackOFEx)
+            {
+                MessageBox.Show("исключение: переполение стека");
+            }
+            return 0;
+
+        }
+    }
+}
