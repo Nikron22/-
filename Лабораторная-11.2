@@ -1,0 +1,149 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace LABA11_2_
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+        string apppath = @"C:\Windows\notepad.exe";
+        struct MARSH
+        {
+            public string StartPoint;
+            public string EndPoint;
+            public int RouteNumber;
+
+            public override string ToString()
+            {
+                return $"{StartPoint} - {EndPoint} (маршрут {RouteNumber})";
+            }
+        }
+
+        private List<MARSH> marshList = new List<MARSH>();
+
+
+        private void buttonGenerate_Click(object sender, EventArgs e)
+        {
+            Random random = new Random();
+            string[] cities = { "Москва", "Санкт-Петербург", "Казань", "Новосибирск", "Томск" };
+
+            marshList.Clear();
+            for (int i = 0; i < 10; i++)
+            {
+                string startPoint, endPoint;
+                do
+                {
+                    startPoint = cities[random.Next(cities.Length)];
+                    endPoint = cities[random.Next(cities.Length)];
+                } 
+                while (startPoint == endPoint);
+
+                MARSH marsh = new MARSH
+                {
+                    StartPoint = startPoint,
+                    EndPoint = endPoint,
+                    RouteNumber = random.Next(100, 999)
+                };
+                marshList.Add(marsh);
+            }
+
+            UpdateListBox(listBoxLeft, marshList);
+        }
+
+
+        private void buttonSave_Click(object sender, EventArgs e)
+        {
+            using (StreamWriter sw = new StreamWriter(@"C:\ТУСУР\Основы программирования\Лаба11.2\Лист.txt"))
+            {
+                foreach (MARSH marsh in marshList)
+                {
+                    sw.WriteLine($"{marsh.StartPoint};{marsh.EndPoint};{marsh.RouteNumber}");
+                }
+            }
+
+            MessageBox.Show("Данные успешно сохранены.");
+        }
+
+
+        private void buttonLoad_Click(object sender, EventArgs e)
+        {
+            marshList.Clear();
+            using (StreamReader sr = new StreamReader(@"C:\ТУСУР\Основы программирования\Лаба11.2\Лист.txt"))
+            {
+                string line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    string[] parts = line.Split(';');
+                    if (parts.Length == 3)
+                    {
+                        MARSH marsh = new MARSH
+                        {
+                            StartPoint = parts[0],
+                            EndPoint = parts[1],
+                            RouteNumber = int.Parse(parts[2])
+                        };
+                        marshList.Add(marsh);
+                    }
+                }
+            }
+
+            UpdateListBox(listBoxLeft, marshList);
+            MessageBox.Show("загружено");
+        }
+
+        private void buttonSearch_Click(object sender, EventArgs e)
+        {
+            int routeNumber = int.Parse(textBoxNumber.Text.Trim());
+
+            
+            List<MARSH> searchResults = marshList.FindAll(m => m.RouteNumber == routeNumber);
+
+            if (searchResults.Count > 0)
+            {
+               
+                UpdateListBox(listBoxRight, searchResults);
+            }
+            else
+            {
+               
+                MessageBox.Show("Маршруты с таким номером не найдены.");
+            }
+        }
+
+
+        private void UpdateListBox(ListBox listBox, List<MARSH> data)
+        {
+            listBox.Items.Clear();
+            foreach (MARSH marsh in data)
+            {
+                listBox.Items.Add(marsh.ToString());
+            }
+        }
+
+        private void buttonClear_Click(object sender, EventArgs e)
+        {
+            listBoxLeft.Items.Clear();
+            listBoxRight.Items.Clear();
+            textBoxNumber.Clear();
+
+        }
+
+        private void buttonOpen_Click(object sender, EventArgs e)
+        {
+            Process.Start(apppath, @"C:\ТУСУР\Основы программирования\Лаба11.2\Лист.txt");
+        }
+    }
+}
+
