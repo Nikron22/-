@@ -1,37 +1,53 @@
-﻿using System;
+using System;
 
-public class Time
+
+public interface ITime
 {
-    public int hours;
-    public int minutes;
-    public int seconds;
+    int Hours { get; set; }
+    int Minutes { get; set; }
+    int Seconds { get; set; }
 
-    public Time(int hours, int minutes, int seconds)
+    int DifferenceInSeconds(ITime other);
+    ITime AddSeconds(int secondsToAdd);
+    ITime SubtractSeconds(int secondsToSubtract);
+    bool IsBefore(ITime other);
+    bool IsAfter(ITime other);
+    int ToSeconds();
+    double ToMinutes();
+}
+
+public abstract class AbstractTime : ITime
+{
+    public int Hours { get; set; }
+    public int Minutes { get; set; }
+    public int Seconds { get; set; }
+
+    public AbstractTime(int hours, int minutes, int seconds)
     {
-        this.hours = hours;
-        this.minutes = minutes;
-        this.seconds = seconds;
+        Hours = hours;
+        Minutes = minutes;
+        Seconds = seconds;
     }
 
-    public int differenceInSeconds(Time other)
+    public int DifferenceInSeconds(ITime other)
     {
-        int totalSecondsThis = hours * 3600 + minutes * 60 + seconds;
-        int totalSecondsOther = other.hours * 3600 + other.minutes * 60 + other.seconds;
+        int totalSecondsThis = Hours * 3600 + Minutes * 60 + Seconds;
+        int totalSecondsOther = other.Hours * 3600 + other.Minutes * 60 + other.Seconds;
         return Math.Abs(totalSecondsThis - totalSecondsOther);
     }
 
-    public Time addSeconds(int secondsToAdd)
+    public ITime AddSeconds(int secondsToAdd)
     {
-        int totalSeconds = hours * 3600 + minutes * 60 + seconds + secondsToAdd;
+        int totalSeconds = Hours * 3600 + Minutes * 60 + Seconds + secondsToAdd;
         int newHours = totalSeconds / 3600;
         int newMinutes = (totalSeconds % 3600) / 60;
         int newSeconds = totalSeconds % 60;
         return new Time(newHours, newMinutes, newSeconds);
     }
 
-    public Time subtractSeconds(int secondsToSubtract)
+    public ITime SubtractSeconds(int secondsToSubtract)
     {
-        int totalSeconds = hours * 3600 + minutes * 60 + seconds - secondsToSubtract;
+        int totalSeconds = Hours * 3600 + Minutes * 60 + Seconds - secondsToSubtract;
         if (totalSeconds < 0)
         {
             throw new ArgumentException("Время не может быть отрицательным");
@@ -42,32 +58,40 @@ public class Time
         return new Time(newHours, newMinutes, newSeconds);
     }
 
-    public bool isBefore(Time other)
+    public bool IsBefore(ITime other)
     {
-        int totalSecondsThis = hours * 3600 + minutes * 60 + seconds;
-        int totalSecondsOther = other.hours * 3600 + other.minutes * 60 + other.seconds;
+        int totalSecondsThis = Hours * 3600 + Minutes * 60 + Seconds;
+        int totalSecondsOther = other.Hours * 3600 + other.Minutes * 60 + other.Seconds;
         return totalSecondsThis < totalSecondsOther;
     }
 
-    public bool isAfter(Time other)
+    public bool IsAfter(ITime other)
     {
-        int totalSecondsThis = hours * 3600 + minutes * 60 + seconds;
-        int totalSecondsOther = other.hours * 3600 + other.minutes * 60 + other.seconds;
+        int totalSecondsThis = Hours * 3600 + Minutes * 60 + Seconds;
+        int totalSecondsOther = other.Hours * 3600 + other.Minutes * 60 + other.Seconds;
         return totalSecondsThis > totalSecondsOther;
     }
 
-    public int toSeconds()
+    public int ToSeconds()
     {
-        return hours * 3600 + minutes * 60 + seconds;
+        return Hours * 3600 + Minutes * 60 + Seconds;
     }
 
-    public double toMinutes()
+    public double ToMinutes()
     {
-        return (int)toSeconds() / 60;
+        return (int)ToSeconds() / 60;
+    }
+}
+
+
+public class Time : AbstractTime
+{
+    public Time(int hours, int minutes, int seconds) : base(hours, minutes, seconds)
+    {
     }
 }
 public class Program
-{ 
+{
     public static void Main(string[] args)
     {
         Console.Write("Введите часы: ");
@@ -76,7 +100,7 @@ public class Program
         int minutes = Convert.ToInt32(Console.ReadLine());
         Console.Write("Введите секунды: ");
         int seconds = Convert.ToInt32(Console.ReadLine());
-        Time time1 = new Time(hours, minutes, seconds);
+        ITime time1 = new Time(hours, minutes, seconds);
 
         Console.Write("Введите часы для второго времени: ");
         hours = Convert.ToInt32(Console.ReadLine());
@@ -84,9 +108,9 @@ public class Program
         minutes = Convert.ToInt32(Console.ReadLine());
         Console.Write("Введите секунды для второго времени: ");
         seconds = Convert.ToInt32(Console.ReadLine());
-        Time time2 = new Time(hours, minutes, seconds);
+        ITime time2 = new Time(hours, minutes, seconds);
 
-        Console.WriteLine("Разница в секундах: " + time1.differenceInSeconds(time2));
+        Console.WriteLine("Разница в секундах: " + time1.DifferenceInSeconds(time2));
         Console.WriteLine("Введите количество секунд которое хотите добавить в первое время");
         int a = Convert.ToInt32(Console.ReadLine());
         Console.WriteLine("Введите количество секунд которое хотите отнять в первом времени");
@@ -95,21 +119,21 @@ public class Program
         int c = Convert.ToInt32(Console.ReadLine());
         Console.WriteLine("Введите количество секунд которое хотите отнять во втором времени");
         int d = Convert.ToInt32(Console.ReadLine());
-        Time time3 = time1.addSeconds(a);
-        Console.WriteLine("После добавления 120 секунд(1 число): " + time3.hours + ":" + time3.minutes + ":" + time3.seconds);
+        ITime time3 = time1.AddSeconds(a);
+        Console.WriteLine("После добавления 120 секунд(1 число): " + time3.Hours + ":" + time3.Minutes + ":" + time3.Seconds);
 
-        Time time4 = time1.subtractSeconds(b);
-        Console.WriteLine("После вычитания 120 секунд(1 число): " + time4.hours + ":" + time4.minutes + ":" + time4.seconds);
+        ITime time4 = time1.SubtractSeconds(b);
+        Console.WriteLine("После вычитания 120 секунд(1 число): " + time4.Hours + ":" + time4.Minutes + ":" + time4.Seconds);
 
-        Time time5 = time2.addSeconds(c);
-        Console.WriteLine("После добавления 120 секунд(2 число): " + time5.hours + ":" + time5.minutes + ":" + time5.seconds);
+        ITime time5 = time2.AddSeconds(c);
+        Console.WriteLine("После добавления 120 секунд(2 число): " + time5.Hours + ":" + time5.Minutes + ":" + time5.Seconds);
 
-        Time time6 = time2.subtractSeconds(d);
-        Console.WriteLine("После вычитания 120 секунд(2 число): " + time6.hours + ":" + time6.minutes + ":" + time6.seconds);
+        ITime time6 = time2.SubtractSeconds(d);
+        Console.WriteLine("После вычитания 120 секунд(2 число): " + time6.Hours + ":" + time6.Minutes + ":" + time6.Seconds);
 
-        Console.WriteLine("Время в секундах(1 число): " + time1.toSeconds());
-        Console.WriteLine("Время в минутах(1 число): " + time1.toMinutes());
-        Console.WriteLine("Время в секундах(2 число): " + time2.toSeconds());
-        Console.WriteLine("Время в минутах(2 число): " + time2.toMinutes());
+        Console.WriteLine("Время в секундах(1 число): " + time1.ToSeconds());
+        Console.WriteLine("Время в минутах(1 число): " + time1.ToMinutes());
+        Console.WriteLine("Время в секундах(2 число): " + time2.ToSeconds());
+        Console.WriteLine("Время в минутах(2 число): " + time2.ToMinutes());
     }
 }
