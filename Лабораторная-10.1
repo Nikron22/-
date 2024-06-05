@@ -1,0 +1,30 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Лаба_10._1
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+        double g= 9.8;
+        double time;
+        double hight;
+        private void button1_Click(object sender, EventArgs e)
+        {
+            hight = double.Parse(textBoxhight.Text);
+            time = Math.Sqrt(2 * hight / g);
+            labelRes.Text = $"Результат = {time}";
+        }
+
+    }
+}
