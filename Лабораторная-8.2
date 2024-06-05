@@ -1,0 +1,96 @@
+using System;
+
+class Programm
+{
+    static void Main(string[] args)
+    {
+        Options toDec = new();
+        toDec.Input();
+        Console.Clear();
+        toDec.Output();
+        toDec.SummOfBin();
+        toDec.DeOfBin();
+    }
+}
+
+public abstract class Binary2
+{
+    public string BinPart1;
+    public string BinPart2;
+    public string BinPart1_2;
+    public string BinPart2_2;
+    public int Summary;
+    public int Summary2;
+    public int Bin1ToInt;
+    public int Bin2ToInt;
+    public int Bin1ToInt1;
+    public int Bin2ToInt2;
+    public string SummaryBinString;
+
+    public void Input()
+    {
+        Console.WriteLine("Введите целую часть двоичного числа");
+        this.BinPart1 = Console.ReadLine();
+        Console.WriteLine("Введите дробную часть двоичного числа");
+        this.BinPart2 = Console.ReadLine();
+        Console.WriteLine("Введите целую часть второго двоичного числа");
+        this.BinPart1_2 = Console.ReadLine();
+        Console.WriteLine("Введите дробную часть второго двоичного числа");
+        this.BinPart2_2 = Console.ReadLine();
+    }
+
+    public void Output()
+    {
+        Console.WriteLine($"Введенное двоичное число {BinPart1},{BinPart2}");
+        Console.WriteLine($"Введенное второе двоичное число {BinPart1_2},{BinPart2_2}");
+    }
+}
+
+public interface InterfaceOfBinary2
+{
+    void Input();
+    void Output();
+}
+
+public class Options : Binary2, InterfaceOfBinary2
+{
+    public void SummOfBin()
+    {
+        Bin1ToInt = Convert.ToInt32(BinPart1, 2);
+        Bin2ToInt = Convert.ToInt32(BinPart2, 2);
+        Bin1ToInt1 = Convert.ToInt32(BinPart1_2, 2);
+        Bin2ToInt2 = Convert.ToInt32(BinPart2_2, 2);
+        Summary = Bin1ToInt - Bin1ToInt1;
+        Summary2 = Bin2ToInt - Bin2ToInt2;
+        SummaryBinString = Convert.ToString(Summary, 2) + ',' + Convert.ToString(Summary2, 2);
+        Console.WriteLine($"Разность равна:{SummaryBinString}");
+    }
+
+    public void DeOfBin()
+    {
+        Bin1ToInt = Convert.ToInt32(BinPart1, 2);
+        Bin2ToInt = Convert.ToInt32(BinPart2, 2);
+        Bin1ToInt1 = Convert.ToInt32(BinPart1_2, 2);
+        Bin2ToInt2 = Convert.ToInt32(BinPart2_2, 2);
+        if (Bin2ToInt == 0 || Bin2ToInt2 == 0)
+        {
+            Summary = Summary = Bin1ToInt / Bin1ToInt1;
+        }
+        else if (Bin1ToInt == 0 || Bin2ToInt2 == 0)
+        {
+            Summary2 = Bin2ToInt / Bin2ToInt2;
+        }
+        else if (Bin2ToInt == Bin2ToInt2)
+        {
+            Summary = Bin1ToInt / Bin1ToInt1;
+            Summary2 = 0;
+        }
+        else
+        {
+            Summary = Bin1ToInt / Bin1ToInt1;
+            Summary2 = Bin2ToInt / Bin2ToInt2;
+        }
+        SummaryBinString = Convert.ToString(Summary, 2) + ',' + Convert.ToString(Summary2, 2);
+        Console.WriteLine($"Результат деления:{SummaryBinString}");
+    }
+}
