@@ -1,0 +1,120 @@
+using System;
+
+public abstract class Сообщение
+{
+    public string Отправитель;
+    public string Получатель;
+    public string Текст; 
+
+    public Сообщение(string отправитель, string получатель, string текст)
+    {
+        Отправитель = отправитель;
+        Получатель = получатель;
+        Текст = текст;
+    }
+
+    public virtual string Protocol()
+    {
+        return "Неизвестный протокол";
+    }
+
+    public override string ToString()
+    {
+        return $"От: {Отправитель}, К: {Получатель}, Текст: {Текст}";
+    }
+    ~Сообщение()
+    { }
+}
+
+public abstract class ЭлектронноеСообщение : Сообщение
+{
+    public string Адрес;
+
+    public ЭлектронноеСообщение(string отправитель, string получатель, string текст, string адрес)
+        : base(отправитель, получатель, текст)
+    {
+        Адрес = адрес;
+    }
+
+    public override string Protocol()
+    {
+        return "Электронное сообщение";
+    }
+}
+
+public class Письмо : Сообщение
+{
+    public Письмо(string отправитель, string получатель, string текст)
+        : base(отправитель, получатель, текст)
+    {
+    }
+
+    public override string Protocol()
+    {
+        return "Письмо";
+    }
+}
+public interface IMessage 
+{
+    public string Protocol();
+}
+
+public class SMS : ЭлектронноеСообщение, IMessage
+{
+    public SMS(string отправитель, string получатель, string текст, string адрес)
+        : base(отправитель, получатель, текст, адрес)
+    {
+    }
+
+    public override string Protocol()
+    {
+        return "SMS";
+    }
+}
+
+public class Email : SMS
+{
+    public Email(string отправитель, string получатель, string текст, string адрес)
+        : base(отправитель, получатель, текст, адрес)
+    {
+    }
+
+    public override string Protocol()
+    {
+        return "Email";
+    }
+}
+class Program
+{
+    static void Main(string[] args)
+    {
+        Console.WriteLine("Введите данные для письма:");
+        string отправитель = Console.ReadLine();
+        string получатель = Console.ReadLine();
+        string текст = Console.ReadLine();
+        Письмо письмо = new Письмо(отправитель, получатель, текст);
+
+        Console.WriteLine("Введите данные для SMS:");
+        отправитель = Console.ReadLine();
+        получатель = Console.ReadLine();
+        текст = Console.ReadLine();
+        string адрес = Console.ReadLine();
+        SMS sms = new SMS(отправитель, получатель, текст, адрес);
+
+        Console.WriteLine("Введите данные для Email:");
+        отправитель = Console.ReadLine();
+        получатель = Console.ReadLine();
+        текст = Console.ReadLine();
+        адрес = Console.ReadLine();
+        Email email = new Email(отправитель, получатель, текст, адрес);
+
+        Сообщение[] сообщения = new Сообщение[] { письмо, sms, email };
+
+        foreach (var сообщение in сообщения)
+        {
+            Console.WriteLine($"Протокол: {сообщение.Protocol()}");
+            Console.WriteLine($"Свойства: {сообщение}");
+        }
+    }
+    ~Program() { }
+}
