@@ -1,0 +1,43 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Лаба_10._2
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+            comboBoxSeason.Items.AddRange(new object[] { "Зима", "Весна", "Лето", "Осень" });
+        }
+        
+        private void comboBoxSeason_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            listBoxMonth.Items.Clear();
+            switch (comboBoxSeason.SelectedItem.ToString())
+            {
+                case "Зима":
+                    listBoxMonth.Items.AddRange(new string[] { "Декабрь", "Январь","Февраль" });
+                    break;
+                case "Весна":
+                    listBoxMonth.Items.AddRange(new string[] { "Март", "Апрель", "Май" });
+                    break;
+                case "Лето":
+                    listBoxMonth.Items.AddRange(new string[] { "Июнь", "Июль", "Август" });
+                    break;
+                case "Осень":
+                    listBoxMonth.Items.AddRange(new string[] { "Сентябрь", "Октябрь", "Ноябрь" });
+                    break;
+
+            }
+
+        }
+    }
+}
